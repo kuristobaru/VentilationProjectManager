@@ -4,7 +4,7 @@ import db from '../database/config.db.js'
 export const Setting = db.define(
   'setting',
   {
-    id_setting: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true

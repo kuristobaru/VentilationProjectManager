@@ -7,7 +7,7 @@ import { Criteria } from './criteria.models.js'
 export const Project = db.define(
   'project',
   {
-    id_project: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
