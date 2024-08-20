@@ -12,6 +12,9 @@ import { vectorRt } from '../routes/vector.routes.js'
 import { valueVectorRT } from '../routes/valueVector.routes.js'
 import { settingRt } from '../routes/setting.routes.js'
 import { projectRt } from '../routes/project.routes.js'
+import { fileURLToPath } from 'url';
+import path from 'path';
+
 export class Server {
   constructor() {
     this.app = express()
@@ -55,6 +58,9 @@ export class Server {
   middlewares() {
     this.app.use(cors())
     this.app.use(express.json())
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    this.app.use(express.static(path.join(__dirname, '../public')));
   }
   routes() {
     this.app.use(this.paths.roles, rolesRt)
