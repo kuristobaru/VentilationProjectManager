@@ -5,7 +5,7 @@ import { Vector } from './vector.models.js'
 export const Equip_Vector_Value = db.define(
   'equip_vector_value',
   {
-    id: {
+    id_equip_vector_value: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true

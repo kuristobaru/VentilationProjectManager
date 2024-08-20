@@ -5,7 +5,7 @@ import { Vector } from './vector.models.js'
 export const Operational_Streets_Values = db.define(
   'opetarional_streets_values',
   {
-    id: {
+    id_operational_streets_values: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true

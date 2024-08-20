@@ -4,7 +4,7 @@ import db from '../database/config.db.js';
 export const ValueVector = db.define(
   'valuevector',
   {
-    id: {
+    id_valuevector: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,

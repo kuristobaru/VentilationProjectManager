@@ -1,10 +1,11 @@
 import db from '../database/config.db.js'
 import { DataTypes } from 'sequelize'
 import { Vector } from './vector.models.js'
+
 export const Operational_Streets = db.define(
   'operational_streets',
   {
-    id: {
+    id_operational_streets: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
