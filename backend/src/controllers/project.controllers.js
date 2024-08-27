@@ -45,12 +45,14 @@ export const projectPost = async (req = request, res = response) => {
     res.status(500).json({ msg: 'error creating project' })
   }
 }
+
 export const projectGet = async (req = request, res = response) => {
   const { user_id } = req.params
   try {
     const project = await Project.findAll({
       include: [
-        { model: User, attributes: ['user_name'] },
+        { model: User, 
+          attributes: ['user_name'] },
         {
           model: Vector,
           attributes: ['id']

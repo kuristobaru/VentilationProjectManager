@@ -22,10 +22,10 @@ export const Operational_Streets = db.define(
   }
 )
 Operational_Streets.belongsTo(Vector, {
-  foreignKey: 'id',
-  sourceKey: 'vector_id'
+  foreignKey: 'vector_id',
+  sourceKey: 'id'
 })
 Vector.hasMany(Operational_Streets, {
-  foreignKey: 'id',
-  targetKey: 'vector_id'
+  foreignKey: 'vector_id',
+  targetKey: 'id'
 })

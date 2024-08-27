@@ -17,10 +17,10 @@ export const Operational_Streets_Values = db.define(
   { tableName: 'Operational_Streets_Values', timestamps: false }
 )
 Operational_Streets_Values.belongsTo(Vector, {
-  foreignKey: 'id',
-  sourceKey: 'vector_id'
+  foreignKey: 'vector_id',
+  sourceKey: 'id'
 })
 Vector.hasMany(Operational_Streets_Values, {
-  foreignKey: 'id',
-  targetKey: 'vector_id'
+  foreignKey: 'vector_id',
+  targetKey: 'id'
 })

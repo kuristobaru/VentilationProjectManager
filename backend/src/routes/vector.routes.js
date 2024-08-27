@@ -30,6 +30,7 @@ vectorRt.post(
     check('sub_area_id', 'sub_area is requerid').not().isEmpty(),
     check('activity_id', 'activity is requerid').not().isEmpty(),
     check('criteria_id', 'criteria is requerid').not().isEmpty(),
+    check('project_id', 'project is requerid').not().isEmpty(),
     check('vector').custom(validatorVector),
     fieldValidation,
   ],

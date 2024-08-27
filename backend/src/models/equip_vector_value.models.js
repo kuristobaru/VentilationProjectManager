@@ -21,10 +21,10 @@ export const Equip_Vector_Value = db.define(
 )
 
 Equip_Vector_Value.belongsTo(Vector, {
-  foreignKey: 'id',
-  sourceKey: 'vector_id'
+  foreignKey: 'vector_id',
+  sourceKey: 'id'
 })
 Vector.hasMany(Equip_Vector_Value, {
-  foreignKey: 'id',
-  targetKey: 'vector_id'
+  foreignKey: 'vector_id',
+  targetKey: 'id'
 })

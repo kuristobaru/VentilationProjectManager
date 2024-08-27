@@ -37,6 +37,7 @@ export const vectorGet = async (req = request, res = response) => {
     });
   }
 };
+
 export const vectorGetById = async (req = request, res = response) => {
   const { id } = req.params;
   const vector = await Vector.findByPk(id, {
@@ -70,6 +71,7 @@ export const vectorGetById = async (req = request, res = response) => {
     });
   }
 };
+
 export const vectorPost = async (req = request, res = response) => {
   const {
     user_id,
@@ -77,6 +79,7 @@ export const vectorPost = async (req = request, res = response) => {
     sub_area_id,
     activity_id,
     criteria_id,
+    project_id,
     availability,
     power_input,
     air_velocity,
@@ -97,6 +100,7 @@ export const vectorPost = async (req = request, res = response) => {
     sub_area_id: sub_area_id,
     activity_id: activity_id,
     criteria_id: criteria_id,
+    project_id: project_id,
     availability: availability,
     air_velocity: air_velocity || 0,
     area_m2: area_m2 || 0,
@@ -118,6 +122,7 @@ export const vectorPost = async (req = request, res = response) => {
     id: addVector.id,
   });
 };
+
 export const operational_street_post = async (
   req = request,
   res = response,
@@ -167,6 +172,7 @@ export const operational_street_value_post = async (
   await addedOSV.save();
   res.status(201).json({ msg: 'operational street value created correctly' });
 };
+
 export const vectorPut = async (req = request, res = response) => {
   const uuid = req.params.id;
   const { id, vector, ...resto } = req.body;
