@@ -12,8 +12,12 @@ import {
 import { noVector, validatorVector } from '../helpers/db-validators.js';
 import { check } from 'express-validator';
 import { fieldValidation } from '../middlewares/field-validation.js';
+import { validarJWT } from '../middlewares/validar-jwt.js';
 
 export const vectorRt = Router();
+
+
+vectorRt.use(validarJWT);
 
 vectorRt.get('/vectors', vectorGet);
 vectorRt.get(
