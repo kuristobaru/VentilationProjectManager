@@ -37,7 +37,7 @@ export const RoutesVPM = () => {
         {status === 'authenticated' ? (
           <Route path='/VentilationProjectManager/*' element={<RoutesAuth />} />
         ) : (
-          <Route path='/*' element={<SignIn />} />
+          <Route path='/*' element={<SignIn/>} />
         )}
       </Routes>
 
