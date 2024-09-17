@@ -1,4 +1,5 @@
 import { response, request } from 'express'
+import db from '../database/config.db.js';
 import {
   Project,
   Setting,
@@ -12,7 +13,7 @@ import {
   Operational_Streets_Values,
   SubArea,
   ValueVector
-} from '../models'
+} from '../models/index.js'
 
 export const projectPost = async (req = request, res = response) => {
   const { project_name, user_id, unit, leakage, value_leakage, period } =
@@ -117,33 +118,34 @@ export const importProject = async (req = request, res = response) => {
     criteria,
   } = req.body;
 
+  const transaction = await db.transaction();
+
   try {
     const project = {
       project_name: project_name,
       user_id: user_id
-    }
-    const addProject = Project.build(project)
-    const projectSaved = await addProject.save()
+    };
+    const addProject = Project.build(project);
+    const projectSaved = await addProject.save({ transaction });
+
     const newSetting = {
       unit: unit,
       leakage: leakage,
       value_leakage: value_leakage,
       period: period,
-      // project_id: addProject.dataValues.id
       project_id: projectSaved.id
-    }
+    };
+    const addSetting = Setting.build(newSetting);
+    await addSetting.save({ transaction });
 
-    const addSetting = Setting.build(newSetting)
-    await addSetting.save()
+    const addArea = Area.build(area);
+    const areaSaved = await addArea.save({ transaction });
 
-    const addArea = Area.build(area)
-    const areaSaved = await addArea.save()
+    const addSubArea = SubArea.build(subArea);
+    const subAreaSaved = await addSubArea.save({ transaction });
 
-    const addSubArea = SubArea.build(subArea)
-    const subAreaSaved = await addSubArea.save()
-
-    const addActivity = Activity.build(activity)
-    const activitySaved = await addActivity.save()
+    const addActivity = Activity.build(activity);
+    const activitySaved = await addActivity.save({ transaction });
 
     for (const crit of criteria) {
       const newCriteria = {
@@ -152,9 +154,9 @@ export const importProject = async (req = request, res = response) => {
         value: crit.value,
         type_vector: crit?.type_vector,
         other_vector: crit?.other_vector
-      }
-      const addCriteria = Criteria.build(newCriteria)
-      const criteriaSaved = await addCriteria.save()
+      };
+      const addCriteria = Criteria.build(newCriteria);
+      const criteriaSaved = await addCriteria.save({ transaction });
 
       for (const vect of crit.vector) {
         const newVector = {
@@ -177,56 +179,58 @@ export const importProject = async (req = request, res = response) => {
           power_input: vect.power_input,
           type_vector: vect.type_vector,
           position: vect.position,
-        }
-        const addVector = Vector.build(newVector)
-        const vectorSaved = await addVector.save()
+        };
+        const addVector = Vector.build(newVector);
+        const vectorSaved = await addVector.save({ transaction });
 
         const newOperational_Streets = {
           ...vect.Operational_Streets,
           vector_id: vectorSaved.id,
           criteria_id: criteriaSaved.id,
         };
-        const addOperational_Streets = Operational_Streets.build(newOperational_Streets)
-        await addOperational_Streets.save()
+        const addOperational_Streets = Operational_Streets.build(newOperational_Streets);
+        await addOperational_Streets.save({ transaction });
 
         const newEquip_Vector_Value = {
           ...vect.Equip_Vector_Value,
           vector_id: vectorSaved.id,
-        }
-        const addEquip_Vector_Value = Equip_Vector_Value.build(newEquip_Vector_Value)
-        await addEquip_Vector_Value.save()
+        };
+        const addEquip_Vector_Value = Equip_Vector_Value.build(newEquip_Vector_Value);
+        await addEquip_Vector_Value.save({ transaction });
 
         const newOperational_Streets_Values = {
           ...vect.Operational_Streets_Values,
           vector_id: vectorSaved.id,
-        }
-        const addOperational_Streets_Values = Operational_Streets_Values.build(newOperational_Streets_Values)
-        await addOperational_Streets_Values.save()
+        };
+        const addOperational_Streets_Values = Operational_Streets_Values.build(newOperational_Streets_Values);
+        await addOperational_Streets_Values.save({ transaction });
 
         const newValueVector = {
           ...ValueVector,
           user_id: user_id,
           vector_id: vectorSaved.id,
-        }
-        const addValueVector = ValueVector.build(newValueVector)
-        await addValueVector.save()
+        };
+        const addValueVector = ValueVector.build(newValueVector);
+        await addValueVector.save({ transaction });
       }
     }
+
+    await transaction.commit();
 
     const projects = await Project.findAll({
       include: [
         { model: User, attributes: ['user_name'] },
-        {
-          model: Vector,
-          attributes: ['id']
-        }
+        { model: Vector, attributes: ['id'] }
       ],
       attributes: { exclude: ['user_id'] },
       where: { user_id: user_id }
-    })
+    });
 
-    res.status(201).json({ msg: 'project created correctly', projects })
+    res.status(201).json({ msg: 'project created correctly', projects });
   } catch (error) {
-    res.status(500).json({ msg: 'error creating project' })
+    await transaction.rollback();
+    console.log(error);
+    res.status(500).json({ msg: 'error creating project' });
   }
-}
+};
+

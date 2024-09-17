@@ -6,6 +6,7 @@ import {
   projectPost
 } from '../controllers/project.controllers.js'
 import { fieldValidation } from '../middlewares/field-validation.js'
+import { check } from 'express-validator'
 
 export const projectRt = Router()
 
