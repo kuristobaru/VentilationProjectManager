@@ -20,7 +20,6 @@ import { useSettingStore } from '../../store/setting-store'
 import { useSubAreaStore } from '../../store/sub-area-store'
 import { useCriteriaStore } from '../../store/criteria-store'
 import { useProjectStore } from '../../store/project'
-
 const style = {
   position: 'absolute',
   top: '50%',
@@ -32,8 +31,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 }
-
-export const SettingModal = ({ open, onClose }) => {
+export const SettingModal = () => {
   const project = useProjectStore((state) => state.project)
   const {
     getSetting,
@@ -46,17 +44,21 @@ export const SettingModal = ({ open, onClose }) => {
   const { putCriteria, criteria } = useCriteriaStore((state) => state)
   const filterCriteria = criteria.find((c) => c.name === 'm3/kW')
   const formData = {
-    unit: u || true,
+    unit: u || true, // ? definiendo el tipo de dato
     leakage: l || false,
     value_leakage: vl || 0,
     m3kw: filterCriteria?.value,
     period: p || 0,
   }
-
-  const [areas] = useAreaStore((state) => state.areas)
-  const [subareas] = useSubAreaStore((state) => state.subareas)
-  const [activitys] = useActivityStore((state) => state.activity)
-
+  console.log(formData)
+  const [open, setOpen] = useState(false)
+  const areas = useAreaStore((state) => state.areas)
+  const subareas = useSubAreaStore((state) => state.subareas)
+  const activitys = useActivityStore((state) => state.activity)
+  const handleOpen = () => {
+    setOpen(true)
+    getSetting(project)
+  }
   const {
     unit,
     leakage,
@@ -68,19 +70,13 @@ export const SettingModal = ({ open, onClose }) => {
     onResetForm,
   } = useForm(formData)
 
-  const handleOpen = () => {
-    getSetting(project)
-  }
-
   const handleClose = () => {
-    onClose()
+    setOpen(false)
     onResetForm()
   }
-
   const handleCheckboxChange = (name) => {
     onInputChange({ target: { name, value: !formState[name] } })
   }
-
   const onSubmit = async (e) => {
     e.preventDefault()
     const setting = {
@@ -93,171 +89,192 @@ export const SettingModal = ({ open, onClose }) => {
     const criteria = {
       value: formState.m3kw,
     }
+    console.log('pasa por el modal de setting', setting)
     putSetting(setting)
     putCriteria(filterCriteria?.id, criteria)
-    handleClose() // Close modal on submit
   }
 
   return (
-    <Modal open={open} onClose={handleClose}>
-      <form onSubmit={onSubmit}>
-        <Box sx={style}>
-          <Typography sx={{ mb: 4, textAlign: 'center' }} variant='h5'>
-            Setting
-          </Typography>
-          <Grid>
-            <Grid
-              container
-              spacing={6}
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '90%',
-              }}
-            >
+    <>
+      <Button sx={{ color: 'white' }} onClick={handleOpen}>
+        Settings
+      </Button>
+      <Modal open={open} onClose={handleClose}>
+        <form onSubmit={onSubmit}>
+          <Box sx={style}>
+            <Typography sx={{ mb: 4, textAlign: 'center' }} variant='h5'>
+              Setting
+            </Typography>
+            <Grid>
               <Grid
-                item
+                container
+                spacing={6}
                 style={{
                   display: 'flex',
+                  justifyContent: 'center',
                   alignItems: 'center',
+                  height: '90%',
                 }}
               >
-                <Typography sx={{ mr: 2 }}>Unit</Typography>
-                <Grid item sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <FormControlLabel
-                    label='Metric'
-                    control={
-                      <Checkbox
-                        checked={unit}
-                        onChange={() => handleCheckboxChange('unit')}
-                      />
-                    }
-                  />
-                  <FormControlLabel
-                    label='Imperial'
-                    control={
-                      <Checkbox
-                        checked={!unit}
-                        onChange={() => handleCheckboxChange('unit')}
-                      />
-                    }
-                  />
+                <Grid
+                  item
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography sx={{ mr: 2 }}>Unit</Typography>
+                  <Grid item sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <FormControlLabel
+                      label='Metrica'
+                      control={
+                        <Checkbox
+                          checked={unit}
+                          onChange={() => handleCheckboxChange('unit')}
+                        />
+                      }
+                    />
+                    <FormControlLabel
+                      label='Imperial'
+                      control={
+                        <Checkbox
+                          checked={!unit}
+                          onChange={() => handleCheckboxChange('unit')}
+                        />
+                      }
+                    />
+                  </Grid>
+                </Grid>
+                <Grid
+                  item
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Grid item sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <FormControlLabel
+                      label='Global'
+                      control={
+                        <Checkbox
+                          checked={leakage}
+                          onChange={() => handleCheckboxChange('leakage')}
+                        />
+                      }
+                    />
+                    <FormControlLabel
+                      label='Vector'
+                      control={
+                        <Checkbox
+                          checked={!leakage}
+                          onChange={() => handleCheckboxChange('leakage')}
+                        />
+                      }
+                    />
+                  </Grid>
+
+                  <FormControl sx={{ width: '90px' }} variant='outlined'>
+                    <InputLabel>Leakage</InputLabel>
+                    <OutlinedInput
+                      sx={{
+                        '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button':
+                          {
+                            '-webkit-appearance': 'none',
+                            margin: 0,
+                          },
+                        '& input[type=number]': {
+                          '-moz-appearance': 'textfield',
+                        },
+                      }}
+                      type='number'
+                      name='value_leakage'
+                      value={value_leakage}
+                      onChange={onInputChange}
+                      label='Leakage'
+                      inputProps={{ min: 0, max: 100 }}
+                      endAdornment={
+                        <InputAdornment position='end'>%</InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <FormControl sx={{ width: '110px ' }} variant='outlined'>
+                    <InputLabel>Equipment Requeriment</InputLabel>
+                    <OutlinedInput
+                      sx={{
+                        '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button':
+                          {
+                            '-webkit-appearance': 'none',
+                            margin: 0,
+                          },
+                        '& input[type=number]': {
+                          '-moz-appearance': 'textfield',
+                        },
+                      }}
+                      type='number'
+                      name='m3kw'
+                      value={m3kw}
+                      onChange={onInputChange}
+                      label={'Equipment Vector'}
+                      endAdornment={
+                        <InputAdornment position='end'>m3/kW</InputAdornment>
+                      }
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item>
+                  <FormControl variant='outlined' sx={{ width: '80px' }}>
+                    <InputLabel>Period</InputLabel>
+                    <OutlinedInput
+                      sx={{
+                        '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button':
+                          {
+                            '-webkit-appearance': 'none',
+                            margin: 0,
+                          },
+                        '& input[type=number]': {
+                          '-moz-appearance': 'textfield',
+                        },
+                      }}
+                      type='number'
+                      name='period'
+                      value={period}
+                      onChange={onInputChange}
+                      label={'Period'}
+                    />
+                  </FormControl>
                 </Grid>
               </Grid>
               <Grid
-                item
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
+                container
+                spacing={10}
+                sx={{ display: 'flex', justifyContent: 'center' }}
               >
-                <Grid item sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <FormControlLabel
-                    label='Global'
-                    control={
-                      <Checkbox
-                        checked={leakage}
-                        onChange={() => handleCheckboxChange('leakage')}
-                      />
-                    }
-                  />
-                  <FormControlLabel
-                    label='Vector'
-                    control={
-                      <Checkbox
-                        checked={!leakage}
-                        onChange={() => handleCheckboxChange('leakage')}
-                      />
-                    }
+                <Grid item sx={{ mt: 2 }}>
+                  <ListZone formState={formState} data={areas} title='Area' />
+                </Grid>
+                <Grid item sx={{ mt: 2 }}>
+                  <ListZone
+                    formState={formState}
+                    data={subareas}
+                    title='Sub Area'
                   />
                 </Grid>
-                <FormControl sx={{ width: '90px' }} variant='outlined'>
-                  <InputLabel>Leakage</InputLabel>
-                  <OutlinedInput
-                    sx={{
-                      '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
-                        '-webkit-appearance': 'none',
-                        margin: 0,
-                      },
-                      '& input[type=number]': {
-                        '-moz-appearance': 'textfield',
-                      },
-                    }}
-                    type='number'
-                    name='value_leakage'
-                    value={value_leakage}
-                    onChange={onInputChange}
-                    label='Leakage'
-                    inputProps={{ min: 0, max: 100 }}
-                    endAdornment={<InputAdornment position='end'>%</InputAdornment>}
+                <Grid item sx={{ mt: 2 }}>
+                  <ListZone
+                    formState={formState}
+                    data={activitys}
+                    title='Activity'
                   />
-                </FormControl>
-              </Grid>
-              <Grid item>
-                <FormControl sx={{ width: '110px' }} variant='outlined'>
-                  <InputLabel>Equipment Requirement</InputLabel>
-                  <OutlinedInput
-                    sx={{
-                      '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
-                        '-webkit-appearance': 'none',
-                        margin: 0,
-                      },
-                      '& input[type=number]': {
-                        '-moz-appearance': 'textfield',
-                      },
-                    }}
-                    type='number'
-                    name='m3kw'
-                    value={m3kw}
-                    onChange={onInputChange}
-                    label={'Equipment Vector'}
-                    endAdornment={<InputAdornment position='end'>m3/kW</InputAdornment>}
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item>
-                <FormControl variant='outlined' sx={{ width: '80px' }}>
-                  <InputLabel>Period</InputLabel>
-                  <OutlinedInput
-                    sx={{
-                      '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
-                        '-webkit-appearance': 'none',
-                        margin: 0,
-                      },
-                      '& input[type=number]': {
-                        '-moz-appearance': 'textfield',
-                      },
-                    }}
-                    type='number'
-                    name='period'
-                    value={period}
-                    onChange={onInputChange}
-                    label={'Period'}
-                  />
-                </FormControl>
+                </Grid>
               </Grid>
             </Grid>
-            <Grid
-              container
-              spacing={10}
-              sx={{ display: 'flex', justifyContent: 'center' }}
-            >
-              <Grid item sx={{ mt: 2 }}>
-                <ListZone formState={formState} data={areas} title='Area' />
-              </Grid>
-              <Grid item sx={{ mt: 2 }}>
-                <ListZone formState={formState} data={subareas} title='Sub Area' />
-              </Grid>
-              <Grid item sx={{ mt: 2 }}>
-                <ListZone formState={formState} data={activitys} title='Activity' />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Button type='submit'>Set</Button>
-          <Button onClick={handleClose}>Close</Button>
-        </Box>
-      </form>
-    </Modal>
+            <Button type='submit'>Set</Button>
+            <Button onClick={() => setOpen(!open)}>Close</Button>
+          </Box>
+        </form>
+      </Modal>
+    </>
   )
 }

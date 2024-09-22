@@ -20,7 +20,6 @@ export const Sidebar = () => {
     resetUser()
     nav('/login')
   }
-
   return (
     <Box component='nav'>
       <Drawer
@@ -31,7 +30,7 @@ export const Sidebar = () => {
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: 170,
-            background: '#2b364a',
+            background: '#0B5394',
             zIndex: 90,
           },
         }}
@@ -40,18 +39,8 @@ export const Sidebar = () => {
           <IconButton color='error' onClick={onClickLogout}>
             <LogoutIcon />
           </IconButton>
-          <Link to={'home'} style={{ textDecoration: 'none' }}>
-            <Typography
-              variant='h6'
-              color={'white'}
-              noWrap
-              component='div'
-              sx={{
-                '&:hover': {
-                  color: '#7375a5', // Cambia a tu color deseado en hover
-                },
-              }}
-            >
+          <Link to={'home'} style={{ textDecoration: 'none', color: 'white' }}>
+            <Typography variant='h6' color={'white'} noWrap component='div'>
               {user_name}
             </Typography>
           </Link>
@@ -67,11 +56,6 @@ export const Sidebar = () => {
             color: 'white',
             textAlign: 'center',
             fontSize: '1.2rem',
-          }}
-          sx={{
-            '&:hover': {
-              color: '#7375a5', // Cambia a tu color deseado en hover
-            },
           }}
         >
           Projects

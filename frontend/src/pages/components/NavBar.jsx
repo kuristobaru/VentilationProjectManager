@@ -1,44 +1,22 @@
-import { Box, Drawer, Button, Typography, IconButton, Menu, MenuItem } from '@mui/material'
-import { Settings } from '@mui/icons-material'
+import { Box, Drawer, Button, Typography } from '@mui/material'
+import { SettingModal } from './SettingModal'
 import { useState } from 'react'
+import { AddModal } from './AddModal'
+import { AddModal2 } from './AddModal2'
+import { AddModal3 } from './AddModal3'
+import { AddModal4 } from './AddModal4'
 import { Link } from 'react-router-dom'
 import globalPng from '../../assets/glopalGraphs.png'
 import areaPng from '../../assets/areaGraph.png'
 import activityPng from '../../assets/activityGraph.png'
 import { useProjectStore } from '../../store/project'
-import { AddModal } from './AddModal'
-import { AddModal2 } from './AddModal2'
-import { AddModal3 } from './AddModal3'
-import { AddModal4 } from './AddModal4'
-import { SettingModal } from './SettingModal'
 
 export const NavBar = () => {
   const [navbar, setNavbar] = useState(1)
   const { project } = useProjectStore((state) => state)
 
-  // States for the settings menu
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [openSettingModal, setOpenSettingModal] = useState(false)
-  const open = Boolean(anchorEl)
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-
-  const handleOpenSettingModal = () => {
-    setOpenSettingModal(true)
-  }
-
-  const handleCloseSettingModal = () => {
-    setOpenSettingModal(false)
-  }
-
   return (
-    <Box component='nav' sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+    <Box component='nav' sx={{}}>
       <Drawer
         variant='permanent'
         open
@@ -57,13 +35,7 @@ export const NavBar = () => {
         }}
       >
         <Button
-          sx={{
-            color: 'white',
-            ...(navbar === 1 && { bgcolor: '#2a87db' }),
-            '&:hover': {
-              bgcolor: '#1d4b8f', // Cambia el color del hover aquí
-            },
-          }}
+          sx={{ color: 'white', ...(navbar === 1 && { bgcolor: '#2a87db' }) }}
           onClick={() => setNavbar(1)}
         >
           <Link
@@ -112,13 +84,7 @@ export const NavBar = () => {
           </Box>
         )}
         <Button
-          sx={{
-            color: 'white',
-            ...(navbar === 2 && { bgcolor: '#2a87db' }),
-            '&:hover': {
-              bgcolor: '#1d4b8f', // Cambia el color del hover aquí
-            },
-          }}
+          sx={{ color: 'white', ...(navbar === 2 && { bgcolor: '#2a87db' }) }}
           onClick={() => setNavbar(2)}
         >
           <Link
@@ -129,13 +95,7 @@ export const NavBar = () => {
           </Link>
         </Button>
         <Button
-          sx={{
-            color: 'white',
-            ...(navbar === 3 && { bgcolor: '#2a87db' }),
-            '&:hover': {
-              bgcolor: '#1d4b8f', // Cambia el color del hover aquí
-            },
-          }}
+          sx={{ color: 'white', ...(navbar === 3 && { bgcolor: '#2a87db' }) }}
           onClick={() => setNavbar(3)}
         >
           <Link
@@ -191,32 +151,7 @@ export const NavBar = () => {
             </Drawer>
           </Box>
         )}
-        <Box sx={{ flexGrow: 1 }} /> {/* This will push the menu to the right */}
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton
-            sx={{ color: 'white' }}
-            onClick={handleClick}
-          >
-            <Settings />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-            PaperProps={{
-              sx: {
-                width: 200,
-                mt: 1, // Add margin top for positioning
-              },
-            }}
-          >
-            <MenuItem onClick={() => handleOpenSettingModal()}>Settings</MenuItem>
-          </Menu>
-          <SettingModal
-            open={openSettingModal}
-            onClose={handleCloseSettingModal}
-          />
-        </Box>
+        <SettingModal />
       </Drawer>
     </Box>
   )
