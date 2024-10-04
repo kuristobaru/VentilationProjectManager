@@ -5,12 +5,12 @@ import { Vector } from './vector.models.js'
 export const Activity = db.define(
   'activity',
   {
-    id: {
+    id_activity: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    name: { type: DataTypes.STRING }
+    activity_name: { type: DataTypes.STRING }
   },
   {
     tableName: 'Activity',

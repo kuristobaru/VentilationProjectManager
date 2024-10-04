@@ -5,12 +5,12 @@ import { User } from './user.models.js'
 export const Role = db.define(
   'role',
   {
-    id: {
+    id_role: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
-    role: { type: DataTypes.STRING }
+    role_name: { type: DataTypes.STRING }
   },
   { tableName: 'Role', timestamps: false }
 )

@@ -5,12 +5,12 @@ import { Vector } from './vector.models.js';
 export const Area = db.define(
   'area',
   {
-    id: {
+    id_area: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    name: { type: DataTypes.STRING },
+    area_name: { type: DataTypes.STRING },
   },
   {
     tableName: 'Area',

@@ -7,7 +7,7 @@ import { Project } from './project.models.js'
 export const User = db.define(
   'user',
   {
-    id: {
+    id_user: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
