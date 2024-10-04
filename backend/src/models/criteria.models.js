@@ -5,13 +5,13 @@ import { Vector } from './vector.models.js'
 export const Criteria = db.define(
   'criteria',
   {
-    id_criteria: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     },
     project_id: { type: DataTypes.UUID },
-    criteria_name: { type: DataTypes.STRING },
+    name: { type: DataTypes.STRING },
     value: { type: DataTypes.INTEGER },
     type_vector: { type: DataTypes.INTEGER },
     other_vector: { type: DataTypes.INTEGER }

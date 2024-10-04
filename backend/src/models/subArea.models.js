@@ -5,12 +5,12 @@ import { Vector } from './vector.models.js';
 export const SubArea = db.define(
   'subarea',
   {
-    id_subarea: {
+    id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    subarea_name: { type: DataTypes.STRING },
+    name: { type: DataTypes.STRING },
   },
   {
     tableName: 'Subarea',
